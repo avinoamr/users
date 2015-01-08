@@ -1,0 +1,45 @@
+{
+  "name": "users",
+  "private": true,
+  "version": "0.0.1",
+  "main": "./users",
+  "dependencies": {
+    "async": "0.2.9",
+    "backbone": "1.1.0",
+    "blueprint": "^2.1.4",
+    "coffee-script": "^1.7.1",
+    "connect-allow": "git+https://github.com/avinoamr/connect-allow.git",
+    "connect-auth": "0.6.1",
+    "connect-backbone": "^1.1.6",
+    "connect-callback": "*",
+    "express": "3.4.8",
+    "node-uuid": "1.4.1",
+    "nodemailer": "0.6.1",
+    "request": "^2.39.0",
+    "underscore": "1.5.2"
+  },
+  "devDependencies": {
+    "backsync": "*",
+    "mocha": "*",
+    "browserify": "3.x",
+    "browserify-shim": "*",
+    "coffeeify": "*",
+    "brfs": "*"
+  },
+  "browserify-shim": {
+    "backbone": "global:Backbone",
+    "underscore": "global:_"
+  },
+  "browserify": {
+    "transform": [
+      "coffeeify",
+      "browserify-shim",
+      "brfs"
+    ]
+  },
+  "scripts": {
+    "start": "npm run-script build; node_modules/coffee-script/bin/coffee server.coffee",
+    "build": "node_modules/browserify/bin/cmd.js --standalone users browser.coffee > dist/users.js",
+    "test": "npm run-script build; node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register"
+  }
+}

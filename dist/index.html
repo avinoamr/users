@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
+        <link   rel="stylesheet"
+                href="http://webfonts.justanotherfoundry.com/Facit/"
+                type="text/css" />
+
+        <style>
+            body {
+                background: #edece4;
+                padding-top: 40px;
+            }
+            .awesome {
+                font-family: "FacitWeb-Bold"
+            }
+            .btn-dark * {
+                color: white !important;
+            }
+            .btn-dark {
+                background: rgb(51, 51, 51);
+                border-color: rgb(64, 64, 64);;
+                color: white;
+            }
+            .btn-dark:focus, .btn-dark:hover{
+                background: rgb(64, 64, 64);
+                color: white;
+            }
+
+            .middle {
+                vertical-align: middle!important;
+            }
+
+            .center {
+                text-align: center!important;
+            }
+
+            .navbar-inverse strong {
+                color: white;
+            }
+
+            input.seamless {
+                z-index: 0;
+                background: transparent !important;
+                border: none !important;
+                /*border-color: none !important;*/
+                box-shadow: none !important;
+                outline: none !important;
+                padding: 0;
+                height: auto !important;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <a class="navbar-brand glyphicon glyphicon-stats" href="#"></a>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-users">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div class="pull-right" role="login"></div>
+        </nav>
+
+        <div id="main"></div>
+        <script type="text/javascript" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="http://underscorejs.org/underscore.js"></script>
+        <script type="text/javascript" src="http://backbonejs.org/backbone.js"></script>
+        <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
+        <script type="text/javascript" src="//requirejs.org/docs/release/2.1.11/comments/require.js"></script>
+        <script>
+            require( [ "users" ], function( users ) {
+                new users.LoginView()
+                    .render().$el.appendTo( $( "[role='login']" ) );
+
+
+                // Example of extending views
+                var AdminView = users.AdminView.extend({
+                    initialize: function() {
+                        users.AdminView.prototype.initialize.apply( this, arguments );
+                        this.ItemView = AdminItemView;
+                    },
+                    render: function() {
+                        users.AdminView.prototype.render.apply( this, arguments );
+                        this.$( "thead tr" ).append( "<th><small>ROLE</small></th>" );
+                        return this;
+                    }
+                });
+
+                var html = '' +
+                    '<td class="middle">' +
+                    '    <select name="role" class="form-control">' +
+                    '        <option>Guest</option>' +
+                    '        <option>Admin</option>' +
+                    '    </select>' +
+                    '</td>';
+                var AdminItemView = users.AdminView.ItemView.extend({
+                    initialize: function() {
+                        users.AdminView.ItemView.prototype.initialize.apply( this, arguments );
+
+                        this.events[ "change [name='role']" ] = function( ev ) {
+                            var role = $( ev.currentTarget ).val();
+                            this.model.save( "role", role, { patch: true } );
+                        }
+
+                        this.model.on( "change:role", function() {
+                            this.$( "[name='role']" ).val( this.model.get( "role" ) );
+                        }, this );
+                    },
+                    render: function() {
+                        users.AdminView.ItemView.prototype.render.apply( this, arguments );
+                        this.$el.append( html );
+                        this.$( "[name='role']" ).val( this.model.get( "role" ) );
+                        return this
+                    }
+                });
+
+                users.Router.route( "users/admins", function() {
+                    this.users( { role: "Admin" } );
+                });
+
+                users.Router.route( "users/guests", function() {
+                    this.users( { role: "Guest" } );
+                });
+
+                new users.Router({ AdminView: AdminView });
+                new Backbone.Router({
+                    routes: {
+                        "": function() {
+                            this.navigate( "users", { trigger: true } )
+                        }
+                    }
+                });
+
+                Backbone.history.start();
+            });
+        </script>
+    </body>
+</html>

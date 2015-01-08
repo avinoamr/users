@@ -1,0 +1,32 @@
+<div class="page-header">
+    <h1 class="row">
+        <div class="col-md-9 col-xs-7" style="overflow:hidden">
+            <span class="awesome"><%= model.title() %></span>
+        </div>
+        <div class="col-md-3 col-xs-5">
+            <div class="btn-group pull-right">
+                <button type="button" class="btn btn-dark hide" title="Edit" name="edit">
+                    <small><strong>EDIT</strong></small>
+                </button>
+                <button type="button" class="btn btn-dark hide" title="Remove User" name="remove">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </div>
+        </div>
+    </h1>
+</div>
+
+<div class="alert alert-danger hide"></div>
+<form class="form-horizontal hide" role="form">
+    <div class="form-group">
+        <label for="user-name" class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-5">
+            <input type="text" class="form-control" id="user-name" name="name" placeholder="Full Name" value="<%= model.get( "name" ) %>">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-5">
+            <button type="submit" class="btn btn-default"><strong><small>SAVE</small></strong></button>
+        </div>
+    </div>
+</form>
